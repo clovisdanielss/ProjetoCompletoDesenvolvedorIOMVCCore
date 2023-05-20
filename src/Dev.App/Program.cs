@@ -1,4 +1,3 @@
-using Dev.App.Data;
 using Dev.Data.Context;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

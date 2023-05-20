@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel;
-
-namespace Dev.Business.Models
+﻿namespace Dev.Business.Models
 {
     public class Address : Entity
     {

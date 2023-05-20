@@ -1,7 +1,7 @@
 ﻿
 namespace Dev.Business.Models
 {
-    public class Supplier: Entity
+    public class Supplier : Entity
     {
         public string Name { get; set; }
         public string Document { get; set; }
@@ -13,7 +13,8 @@ namespace Dev.Business.Models
         public IEnumerable<Product> Products { get; set; }
     }
 
-    public enum SupplierType { 
+    public enum SupplierType
+    {
         PF,
         PJ
     }
