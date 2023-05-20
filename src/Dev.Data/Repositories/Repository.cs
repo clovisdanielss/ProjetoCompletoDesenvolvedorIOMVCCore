@@ -50,6 +50,7 @@ namespace Dev.Data.Repositories
         public async Task Remove(Guid id)
         {
             entitySet.Remove(new T { Id = id });
+            await SaveChanges();
         }
 
         public async Task<int> SaveChanges()
@@ -61,6 +62,7 @@ namespace Dev.Data.Repositories
         public async Task Update(T item)
         {
             entitySet.Update(item);
+            await SaveChanges();
         }
     }
 }
