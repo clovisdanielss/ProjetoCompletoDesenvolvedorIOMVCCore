@@ -24,7 +24,7 @@ namespace Dev.App.Controllers
         // GET: Products
         public async Task<IActionResult> Index()
         {
-            return View(_mapper.Map<IEnumerable<ProductViewModel>>(await _productRepository.GetAll()));
+            return View(_mapper.Map<IEnumerable<ProductViewModel>>(await _productRepository.GetAllWithSuppliers()));
         }
 
         // GET: Products/Details/5

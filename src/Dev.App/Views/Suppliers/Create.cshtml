@@ -1,12 +1,11 @@
 ﻿@model Dev.App.ViewModels.SupplierViewModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewBag.SupplierCreateTitle = "Criar Fornecedor";
 }
 
-<h1>Create</h1>
+<h1>@ViewBag.SupplierCreateTitle</h1>
 
-<h4>SupplierViewModel</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -30,20 +29,20 @@
                 </select>
                 <span asp-validation-for="Type" class="text-danger"></span>
             </div>
+
+            <partial name="_AddressPartial" />
+
             <div class="form-group form-check">
                 <label class="form-check-label">
                     <input class="form-check-input" asp-for="Active" /> @Html.DisplayNameFor(model => model.Active)
                 </label>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Cadastrar" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Voltar</a>
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
