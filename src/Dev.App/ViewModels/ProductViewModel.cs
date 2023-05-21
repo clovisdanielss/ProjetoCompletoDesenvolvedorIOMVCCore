@@ -19,6 +19,7 @@ namespace Dev.App.ViewModels
         public string Name { get; set; }
         [DisplayName("Imagem")]
         public IFormFile ImageUpload { get; set; }
+        [DisplayName("Imagem")]
         public string Image { get; set; }
         [Required(ErrorMessage = "O campo Descrição é obrigatório")]
         [StringLength(1000, ErrorMessage = "O campo Nome deve conter de {2} até {1} caracteres", MinimumLength = 0)]

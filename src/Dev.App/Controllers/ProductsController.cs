@@ -60,6 +60,13 @@ namespace Dev.App.Controllers
                 return View(productViewModel);
             }
 
+            var imgPrefix = Guid.NewGuid() + "_";
+            if (!await UploadImage(productViewModel.ImageUpload, imgPrefix))
+            {
+                return View(productViewModel);
+            }
+            productViewModel.Image = imgPrefix + productViewModel.ImageUpload.FileName;
+
             await _productRepository.Add(_mapper.Map<Product>(productViewModel));
             return RedirectToAction(nameof(Index));
         }
@@ -133,6 +140,21 @@ namespace Dev.App.Controllers
         {
             product.AllSuppliers = _mapper.Map<IEnumerable<SupplierViewModel>>(await _supplierRepository.GetAll());
             return product;
+        }
+        private async Task<bool> UploadImage(IFormFile imageUpload, string imgPrefix)
+        {
+            if (imageUpload.Length <= 0) return false;
+            var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", imgPrefix + imageUpload.FileName);
+            if (System.IO.File.Exists(path))
+            {
+                ModelState.AddModelError(string.Empty, "Já existe arquivo com esse nome");
+                return false;
+            }
+            using (var stream = new FileStream(path, FileMode.Create))
+            {
+                await imageUpload.CopyToAsync(stream);
+            }
+            return true;
         }
     }
 }
