@@ -7,6 +7,9 @@ namespace Dev.App.ViewModels
     {
         [Key]
         public Guid Id { get; set; }
+        [DisplayName("Fornecedor")]
+        [Required(ErrorMessage = "O campo Fornecedor é obrigatório")]
+        public Guid SupplierId { get; set; }
         public SupplierViewModel Supplier { get; set; }
         [DisplayName("Logradouro")]
         [Required(ErrorMessage = "O campo Logradouro é obrigatório")]
