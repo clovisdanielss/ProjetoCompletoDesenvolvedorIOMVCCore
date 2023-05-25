@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Dev.App.Extensions;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -27,6 +28,7 @@ namespace Dev.App.ViewModels
         public string Description { get; set; }
         [Required(ErrorMessage = "O campo Valor é obrigatório")]
         [DisplayName("Valor")]
+        [Currency]
         public decimal Value { get; set; }
         [ScaffoldColumn(false)]
         public DateTime CreatedDate { get; set; }
