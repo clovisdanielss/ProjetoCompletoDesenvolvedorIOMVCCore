@@ -15,5 +15,10 @@ namespace Dev.Data.Repositories
         {
             return await (await Query()).Include(x => x.Supplier).ToListAsync();
         }
+
+        public async Task<Product> GetByIdWithSupplier(Guid id)
+        {
+            return await (await Query()).Include(x => x.Supplier).FirstOrDefaultAsync(x => x.Id == id);
+        }
     }
 }

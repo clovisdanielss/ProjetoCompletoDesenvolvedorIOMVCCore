@@ -88,12 +88,17 @@ namespace Dev.App.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,SupplierId,Name,Image,Description,Value,Active")] ProductViewModel productViewModel)
+        public async Task<IActionResult> Edit(Guid id, ProductViewModel productViewModel)
         {
-            if (id != productViewModel.Id)
+            var product = await _productRepository.GetByIdWithSupplier(id);
+            
+            if (id != productViewModel.Id || product == null)
             {
                 return NotFound();
-            }
+            }          
+
+            productViewModel.Supplier = _mapper.Map<SupplierViewModel>(product.Supplier);
+            productViewModel.Image = product.Image;
 
             if (!ModelState.IsValid)
             {
@@ -101,7 +106,23 @@ namespace Dev.App.Controllers
                 return View(productViewModel);
             }
 
-            await _productRepository.Update(_mapper.Map<Product>(productViewModel));
+            if (productViewModel.ImageUpload != null)
+            {
+                var imgPrefix = Guid.NewGuid() + "_";
+                if (!await UploadImage(productViewModel.ImageUpload, imgPrefix))
+                {
+                    return View(productViewModel);
+                }
+                productViewModel.Image = imgPrefix + productViewModel.ImageUpload.FileName;
+                product.Image = productViewModel.Image;
+            }
+
+            product.Name = productViewModel.Name;
+            product.Description= productViewModel.Description;
+            product.Value= productViewModel.Value;
+            product.Active= productViewModel.Active;
+
+            await _productRepository.Update(product);
             return RedirectToAction(nameof(Index));
         }
 
