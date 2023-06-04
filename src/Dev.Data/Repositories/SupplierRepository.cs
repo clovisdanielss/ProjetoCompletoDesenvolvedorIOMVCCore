@@ -13,7 +13,7 @@ namespace Dev.Data.Repositories
 
         public async Task<Supplier> GetByIdWithAddress(Guid id)
         {
-            return await (await Query()).Include(x => x.Address).FirstOrDefaultAsync(x => x.Id == id);
+            return await (await Query()).Include(x => x.Address).Include(x => x.Products).FirstOrDefaultAsync(x => x.Id == id);
         }
     }
 }

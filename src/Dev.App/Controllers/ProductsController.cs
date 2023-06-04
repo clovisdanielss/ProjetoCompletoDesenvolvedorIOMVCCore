@@ -153,7 +153,7 @@ namespace Dev.App.Controllers
 
         private async Task<ProductViewModel> GetProductWithAllSuppliers(Guid id)
         {
-            var product = _mapper.Map<ProductViewModel>(await _productRepository.GetById(id));
+            var product = _mapper.Map<ProductViewModel>(await _productRepository.GetByIdWithSupplier(id));
             return await InsertAllSupliersInProduct(product);
         }
 

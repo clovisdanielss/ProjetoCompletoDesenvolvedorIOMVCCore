@@ -1,0 +1,20 @@
+﻿@model SupplierViewModel
+
+<div class="modal-header">
+    <h4 class="modal-title">Atualizar endereço</h4>
+</div>
+<form asp-action="UpdateAddress">
+    <div class="modal-body">
+        <input type="hidden" asp-for="Address.SupplierId" />
+        <input type="hidden" asp-for="Address.Id" />
+
+        <partial name="_AddressPartial" />
+
+        <div class="modal-footer">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Atualizar Endereço" class="btn btn-success"/>
+                <button type="button" class="btn btn-info" onclick="closeMyModal()">Fechar</button>
+            </div>
+        </div>
+    </div>
+</form>

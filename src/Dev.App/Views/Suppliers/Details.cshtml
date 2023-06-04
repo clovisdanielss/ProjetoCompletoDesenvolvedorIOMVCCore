@@ -37,5 +37,18 @@
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary">Editar</a>
-    <a asp-action="Index" class="btn btn-secondary">Voltar</a>
+    <a href="javascript:window.history.back();" class="btn btn-secondary">Voltar</a>
 </div>
+
+@if(Model.Address != null)
+{
+    <hr/>
+    <h3>Endereço</h3>
+    <partial name="_AddressIndexPartial" model="@Model.Address"></partial>
+}
+
+@if(Model.Products != null){
+    <hr/>
+    <h3>Produtos</h3>
+        <partial name="../Products/_ProductIndexPartial" model="@Model.Products"></partial>
+}

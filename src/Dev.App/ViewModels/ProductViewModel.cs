@@ -18,6 +18,8 @@ namespace Dev.App.ViewModels
         [Required(ErrorMessage = "O campo Nome é obrigatório")]
         [StringLength(200, ErrorMessage = "O campo Nome deve conter de {2} até {1} caracteres", MinimumLength = 2)]
         public string Name { get; set; }
+        [NotMapped]
+        [ScaffoldColumn(false)]
         [DisplayName("Imagem")]
         public IFormFile ImageUpload { get; set; }
         [DisplayName("Imagem")]

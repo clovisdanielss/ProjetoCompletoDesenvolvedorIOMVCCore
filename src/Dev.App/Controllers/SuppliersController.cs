@@ -9,11 +9,13 @@ namespace Dev.App.Controllers
     public class SuppliersController : BaseController
     {
         private readonly ISupplierRepository _supplierRepository;
+        private readonly IAddressRepository _addressRepository;
         private readonly IMapper _mapper;
-        public SuppliersController(ISupplierRepository supplierRepository, IMapper mapper)
+        public SuppliersController(ISupplierRepository supplierRepository, IMapper mapper, IAddressRepository addressRepository)
         {
             this._supplierRepository = supplierRepository ?? throw new ArgumentNullException(nameof(supplierRepository));
             this._mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            this._addressRepository=addressRepository ?? throw new ArgumentNullException(nameof(addressRepository));
         }
 
         // GET: Suppliers
@@ -113,5 +115,42 @@ namespace Dev.App.Controllers
             }
             return RedirectToAction(nameof(Index));
         }
+
+        [HttpGet("UpdateAddress")]
+        public async Task<IActionResult> UpdateAddress(Guid id)
+        {
+            var supplier = await _supplierRepository.GetByIdWithAddress(id);
+            var supplierModel = _mapper.Map<SupplierViewModel>(supplier);
+
+            return PartialView("_AddressEditPartial", new SupplierViewModel { Address = supplierModel.Address });
+        }
+
+        [HttpPost("UpdateAddress")]
+        public async Task<IActionResult> UpdateAddress(AddressViewModel address)
+        {
+            ModelState.Remove("Name");
+            ModelState.Remove("Document");
+            if (!ModelState.IsValid)
+            {
+                return PartialView("_AddressEditPartial", new SupplierViewModel { Address = address });
+            }
+            var addressDb = _mapper.Map<Address>(address);
+            await _addressRepository.Update(addressDb);
+            var url = Url.Action(nameof(GetAddress), "Suppliers", new { id = address.Id });
+            return Json(new { success = true, url });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAddress(Guid id)
+        {
+            var address = await _addressRepository.GetById(id);
+            if(address == null)
+            {
+                return NotFound();
+            }
+
+            return PartialView("_AddressIndexPartial", _mapper.Map<AddressViewModel>(address));
+        }
+
     }
 }
