@@ -10,12 +10,15 @@ namespace Dev.App.Controllers
     {
         private readonly ISupplierRepository _supplierRepository;
         private readonly IAddressRepository _addressRepository;
+        private readonly ISupplierService _supplierService;
         private readonly IMapper _mapper;
-        public SuppliersController(ISupplierRepository supplierRepository, IMapper mapper, IAddressRepository addressRepository)
+        public SuppliersController(ISupplierRepository supplierRepository, IMapper mapper, IAddressRepository addressRepository,
+            ISupplierService supplierService, INotifier notifier) : base(notifier)
         {
             this._supplierRepository = supplierRepository ?? throw new ArgumentNullException(nameof(supplierRepository));
             this._mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             this._addressRepository=addressRepository ?? throw new ArgumentNullException(nameof(addressRepository));
+            _supplierService=supplierService ?? throw new ArgumentNullException(nameof(supplierService));
         }
 
         // GET: Suppliers
@@ -55,7 +58,11 @@ namespace Dev.App.Controllers
                 return View(supplierViewModel);
             }
             
-            await _supplierRepository.Add(_mapper.Map<Supplier>(supplierViewModel));
+            await _supplierService.Add(_mapper.Map<Supplier>(supplierViewModel));
+            if (!ValidOperation())
+            {
+                return View(supplierViewModel);
+            }
             return RedirectToAction(nameof(Index));
         }
 
@@ -87,7 +94,12 @@ namespace Dev.App.Controllers
                 return View(supplierViewModel);
             }
 
-            await _supplierRepository.Update(_mapper.Map<Supplier>(supplierViewModel));
+            await _supplierService.Update(_mapper.Map<Supplier>(supplierViewModel));
+            if (!ValidOperation())
+            {
+                supplierViewModel = _mapper.Map<SupplierViewModel>(await _supplierRepository.GetByIdWithAddress(id));
+                return View(nameof(Edit), supplierViewModel);
+            }
             return RedirectToAction(nameof(Index));            
         }
 
@@ -111,7 +123,12 @@ namespace Dev.App.Controllers
             var supplier = (await _supplierRepository.QueryReadOnly()).FirstOrDefault(x => x.Id == id);
             if (supplier != null)
             {
-                await _supplierRepository.Remove(id);
+                await _supplierService.Remove(id);
+                if (!ValidOperation())
+                {
+                    return View(supplier);
+                }
+                TempData["Success"] = "Fornecedor excluido com sucesso!";
             }
             return RedirectToAction(nameof(Index));
         }
@@ -135,7 +152,11 @@ namespace Dev.App.Controllers
                 return PartialView("_AddressEditPartial", new SupplierViewModel { Address = address });
             }
             var addressDb = _mapper.Map<Address>(address);
-            await _addressRepository.Update(addressDb);
+            await _supplierService.UpdateAddress(addressDb);
+            if (!ValidOperation())
+            {
+                return PartialView("_AddressEditPartial", new SupplierViewModel { Address = address });
+            }
             var url = Url.Action(nameof(GetAddress), "Suppliers", new { id = address.Id });
             return Json(new { success = true, url });
         }

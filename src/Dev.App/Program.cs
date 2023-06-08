@@ -1,6 +1,7 @@
 using Dev.App.AutoMapper;
 using Dev.App.Extensions;
 using Dev.Business.Interfaces;
+using Dev.Business.Services;
 using Dev.Data.Context;
 using Dev.Data.Repositories;
 using Microsoft.AspNetCore.Identity;
@@ -41,6 +42,9 @@ builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<ISupplierRepository, SupplierRepository>();
 builder.Services.AddScoped<IAddressRepository, AddressRepository>();
 builder.Services.AddSingleton<IValidationAttributeAdapterProvider, CurrencyValidationAttributeAdapterProvider>();
+builder.Services.AddScoped<ISupplierService, SupplierService>();
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<INotifier, Notifier>();
 
 var app = builder.Build();
 

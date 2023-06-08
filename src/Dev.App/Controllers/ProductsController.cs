@@ -8,17 +8,20 @@ using Dev.Business.Models;
 
 namespace Dev.App.Controllers
 {
-    public class ProductsController : Controller
+    public class ProductsController : BaseController
     {
         private readonly IProductRepository _productRepository;
         private readonly ISupplierRepository _supplierRepository;
+        private readonly IProductService _productService;
         private readonly IMapper _mapper;
 
-        public ProductsController(IProductRepository productRepository, ISupplierRepository supplierRepository, IMapper mapper)
+        public ProductsController(IProductRepository productRepository, ISupplierRepository supplierRepository
+            , IMapper mapper, IProductService productService, INotifier notifier) : base(notifier)
         {
             _productRepository=productRepository ?? throw new ArgumentNullException(nameof(productRepository));
             _supplierRepository=supplierRepository ?? throw new ArgumentNullException(nameof(supplierRepository));
             _mapper=mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _productService=productService ?? throw new ArgumentNullException(nameof(productService));
         }
 
         // GET: Products
@@ -67,7 +70,9 @@ namespace Dev.App.Controllers
             }
             productViewModel.Image = imgPrefix + productViewModel.ImageUpload.FileName;
 
-            await _productRepository.Add(_mapper.Map<Product>(productViewModel));
+            var product = _mapper.Map<Product>(productViewModel);
+            await _productService.Add(product);
+            if (!ValidOperation()) return View(productViewModel);
             return RedirectToAction(nameof(Index));
         }
 
@@ -122,7 +127,8 @@ namespace Dev.App.Controllers
             product.Value= productViewModel.Value;
             product.Active= productViewModel.Active;
 
-            await _productRepository.Update(product);
+            await _productService.Update(product);
+            if (!ValidOperation()) return View(productViewModel);
             return RedirectToAction(nameof(Index));
         }
 
@@ -146,8 +152,11 @@ namespace Dev.App.Controllers
             var product = (await _productRepository.QueryReadOnly()).FirstOrDefault(x => x.Id == id);
             if (product != null)
             {
-                await _productRepository.Remove(id);
+                await _productService.Remove(id);
+                if (!ValidOperation()) return View(product);
+                TempData["Success"] = "Produto excluido com sucesso!";
             }
+
             return RedirectToAction(nameof(Index));
         }
 
