@@ -23,11 +23,13 @@ namespace Dev.App.Controllers
         {
             return View();
         }
+        
 
+        [HttpGet("Error/{code?}")]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        public IActionResult Error(int? code = null)
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier, Code = code.HasValue ? code.Value : 500 });
         }
     }
 }

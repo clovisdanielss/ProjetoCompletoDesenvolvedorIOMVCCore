@@ -3,9 +3,12 @@ using Dev.App.ViewModels;
 using Dev.Business.Interfaces;
 using AutoMapper;
 using Dev.Business.Models;
+using Microsoft.AspNetCore.Authorization;
+using Dev.App.Authorization;
 
 namespace Dev.App.Controllers
 {
+    [Authorize]
     public class SuppliersController : BaseController
     {
         private readonly ISupplierRepository _supplierRepository;
@@ -41,6 +44,7 @@ namespace Dev.App.Controllers
         }
 
         // GET: Suppliers/Create
+        [ClaimsAuthorize("Supplier", "Create")]
         public IActionResult Create()
         {
             return View();
@@ -51,6 +55,7 @@ namespace Dev.App.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [ClaimsAuthorize("Supplier", "Create")]
         public async Task<IActionResult> Create(SupplierViewModel supplierViewModel)
         {
             if (!ModelState.IsValid)
@@ -67,6 +72,7 @@ namespace Dev.App.Controllers
         }
 
         // GET: Suppliers/Edit/5
+        [ClaimsAuthorize("Supplier", "Edit")]
         public async Task<IActionResult> Edit(Guid id)
         {
             var supplierViewModel = _mapper.Map<SupplierViewModel>(await _supplierRepository.GetByIdWithAddress(id));
@@ -82,6 +88,7 @@ namespace Dev.App.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [ClaimsAuthorize("Supplier", "Edit")]
         public async Task<IActionResult> Edit(Guid id, SupplierViewModel supplierViewModel)
         {
             if (id != supplierViewModel.Id)
@@ -104,6 +111,7 @@ namespace Dev.App.Controllers
         }
 
         // GET: Suppliers/Delete/5
+        [ClaimsAuthorize("Supplier", "Delete")]
         public async Task<IActionResult> Delete(Guid id)
         {
             var supplierViewModel = _mapper.Map<SupplierViewModel>(await _supplierRepository.GetById(id));
@@ -118,6 +126,7 @@ namespace Dev.App.Controllers
         // POST: Suppliers/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [ClaimsAuthorize("Supplier", "Delete")]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
             var supplier = (await _supplierRepository.QueryReadOnly()).FirstOrDefault(x => x.Id == id);
@@ -134,6 +143,7 @@ namespace Dev.App.Controllers
         }
 
         [HttpGet("UpdateAddress")]
+        [ClaimsAuthorize("Supplier", "Edit")]
         public async Task<IActionResult> UpdateAddress(Guid id)
         {
             var supplier = await _supplierRepository.GetByIdWithAddress(id);
@@ -143,6 +153,7 @@ namespace Dev.App.Controllers
         }
 
         [HttpPost("UpdateAddress")]
+        [ClaimsAuthorize("Supplier", "Edit")]
         public async Task<IActionResult> UpdateAddress(AddressViewModel address)
         {
             ModelState.Remove("Name");

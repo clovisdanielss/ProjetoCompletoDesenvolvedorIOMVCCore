@@ -41,9 +41,9 @@
                     @Html.DisplayFor(modelItem => item.Active)
                 </td>
                 <td style="text-align:right;">
-                    <a asp-controller="Products" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary"><spam class="fa fa-pencil"></spam></a>
+                    <a suppress-by-claim-name="Product" suppress-by-claim-value="Edit" asp-controller="Products" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary"><spam class="fa fa-pencil"></spam></a>
                     <a asp-controller="Products" asp-action="Details" asp-route-id="@item.Id" class="btn btn-warning"><spam class="fa fa-search"></spam></a>
-                    <a asp-controller="Products" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger"><spam class="fa fa-trash"></spam></a>
+                    <a suppress-by-claim-name="Product" suppress-by-claim-value="Delete" asp-controller="Products" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger"><spam class="fa fa-trash"></spam></a>
                 </td>
             </tr>
         }

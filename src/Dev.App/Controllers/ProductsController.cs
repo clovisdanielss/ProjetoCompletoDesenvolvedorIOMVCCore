@@ -5,9 +5,12 @@ using Dev.App.ViewModels;
 using Dev.Business.Interfaces;
 using AutoMapper;
 using Dev.Business.Models;
+using Microsoft.AspNetCore.Authorization;
+using Dev.App.Authorization;
 
 namespace Dev.App.Controllers
 {
+    [Authorize]
     public class ProductsController : BaseController
     {
         private readonly IProductRepository _productRepository;
@@ -43,6 +46,7 @@ namespace Dev.App.Controllers
         }
 
         // GET: Products/Create
+        [ClaimsAuthorize("Product", "Create")]
         public async Task<IActionResult> Create()
         {
             var productViewModel = await InsertAllSupliersInProduct(new ProductViewModel());
@@ -55,6 +59,7 @@ namespace Dev.App.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [ClaimsAuthorize("Product", "Create")]
         public async Task<IActionResult> Create(ProductViewModel productViewModel)
         {
             if (!ModelState.IsValid)
@@ -77,6 +82,7 @@ namespace Dev.App.Controllers
         }
 
         // GET: Products/Edit/5
+        [ClaimsAuthorize("Product", "Edit")]
         public async Task<IActionResult> Edit(Guid id)
         {
             var productViewModel = _mapper.Map<ProductViewModel>(await GetProductWithAllSuppliers(id));
@@ -93,6 +99,7 @@ namespace Dev.App.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [ClaimsAuthorize("Product", "Edit")]
         public async Task<IActionResult> Edit(Guid id, ProductViewModel productViewModel)
         {
             var product = await _productRepository.GetByIdWithSupplier(id);
@@ -133,6 +140,7 @@ namespace Dev.App.Controllers
         }
 
         // GET: Products/Delete/5
+        [ClaimsAuthorize("Product", "Delete")]
         public async Task<IActionResult> Delete(Guid id)
         {
             var productViewModel = _mapper.Map<ProductViewModel>(await _productRepository.GetById(id));
@@ -147,6 +155,7 @@ namespace Dev.App.Controllers
         // POST: Products/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [ClaimsAuthorize("Product", "Delete")]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
             var product = (await _productRepository.QueryReadOnly()).FirstOrDefault(x => x.Id == id);
